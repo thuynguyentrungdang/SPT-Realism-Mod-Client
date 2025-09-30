@@ -49,10 +49,10 @@ namespace RealismMod
         public bool IsChristmas { get; set; }
         public bool IsPreExplosion { get; set; }
         public bool HasExploded { get; set; }
-        public bool IsNightTime { get; set; }   
+        public bool IsNightTime { get; set; }
     }
 
-    public enum EUpdateType 
+    public enum EUpdateType
     {
         Full,
         ModInfo,
@@ -130,13 +130,13 @@ namespace RealismMod
             catch (Exception ex)
             {
                 Utils.Logger.LogError($"REALISM MOD ERROR: FAILED TO FETCH DATA FROM SERVER USING ROUTE {route}: {ex.Message}");
-                return null;    
+                return null;
             }
         }
 
         public static void RequestRealismDataFromServer(EUpdateType updateType)
         {
-            switch(updateType)
+            switch (updateType)
             {
                 case EUpdateType.Full:
                     ServerConfig = UpdateInfoFromServer<RealismConfig>("/RealismMod/GetConfig");
@@ -245,7 +245,7 @@ namespace RealismMod
             while (!sendWeb.isDone)
                 await Task.Yield();
 
-            if (uwr.isNetworkError || uwr.isHttpError)
+            if (uwr.result == UnityWebRequest.Result.ConnectionError)
             {
                 Logger.LogError("Realism Mod: Failed To Fetch Resource");
                 return null;
@@ -291,7 +291,7 @@ namespace RealismMod
             return bundle;
         }
 
-        private void LoadBundles() 
+        private void LoadBundles()
         {
             _baseBundleFilepath = Path.Combine(Environment.CurrentDirectory, "BepInEx\\plugins\\Realism\\bundles\\");
             Assets.GooBarrelBundle = LoadAndInitializePrefabs("hazard_assets\\yellow_barrel.bundle");
@@ -333,7 +333,7 @@ namespace RealismMod
             DontDestroyOnLoad(RealismWeatherGameObject);
         }
 
-        private void LoadAudioController() 
+        private void LoadAudioController()
         {
             AudioControllerGameObject = new GameObject();
             RealismAudioController = AudioControllerGameObject.AddComponent<RealismAudioController>();
@@ -360,7 +360,7 @@ namespace RealismMod
             try
             {
                 RequestRealismDataFromServer(EUpdateType.Full);
-                LoadBundles();   
+                LoadBundles();
                 LoadSprites();
                 LoadTextures();
                 CacheIcons();
@@ -385,7 +385,7 @@ namespace RealismMod
             LoadGeneralPatches();
 
             //hazards
-            if (ServerConfig.enable_hazard_zones) 
+            if (ServerConfig.enable_hazard_zones)
             {
                 LoadHazardPatches();
             }
@@ -396,13 +396,13 @@ namespace RealismMod
             }
 
             //recoil and attachments
-            if (ServerConfig.recoil_attachment_overhaul) 
+            if (ServerConfig.recoil_attachment_overhaul)
             {
                 LoadRecoilPatches();
             }
 
             LoadReloadPatches();
-  
+
             //Ballistics
             if (ServerConfig.realistic_ballistics)
             {
@@ -417,18 +417,18 @@ namespace RealismMod
 
             //gear patces
             if (ServerConfig.gear_weight)
-            {      
+            {
                 new TotalWeightPatch().Enable();
             }
 
             //Movement
-            if (ServerConfig.movement_changes) 
+            if (ServerConfig.movement_changes)
             {
                 LoadMovementPatches();
             }
 
             //Stances
-            if (ServerConfig.enable_stances) 
+            if (ServerConfig.enable_stances)
             {
                 LoadStancePatches();
             }
@@ -436,10 +436,10 @@ namespace RealismMod
             //also needed for visual recoil
             if (ServerConfig.enable_stances || ServerConfig.realistic_ballistics)
             {
-                new ApplyComplexRotationPatch().Enable(); 
+                new ApplyComplexRotationPatch().Enable();
             }
 
-            if (ServerConfig.enable_stances || ServerConfig.headset_changes) 
+            if (ServerConfig.enable_stances || ServerConfig.headset_changes)
             {
                 new ADSAudioPatch().Enable();
             }
@@ -460,7 +460,7 @@ namespace RealismMod
 
         }
 
-        private void CheckForMods() 
+        private void CheckForMods()
         {
             if (!_detectedMods && (int)Time.time % 5 == 0)
             {
@@ -476,7 +476,7 @@ namespace RealismMod
             }
         }
 
-        private void CheckForProfileData() 
+        private void CheckForProfileData()
         {
             //keep trying to get player profile id and update hazard values
             if (!_gotProfileId)
@@ -493,18 +493,19 @@ namespace RealismMod
                     }
                     _gotProfileId = true;
                 }
-                catch 
+                catch
                 {
                     if (PluginConfig.EnableGeneralLogging.Value) Logger.LogWarning("Realism Mod: Error Getting Profile ID, Retrying");
                 }
             }
         }
 
-        private void ZoneDebugUpdate() 
+        private void ZoneDebugUpdate()
         {
             if (Input.GetKeyDown(KeyCode.Keypad1))
             {
                 var player = Utils.GetYourPlayer().Transform;
+
 #pragma warning disable CS4014
                 Utils.LoadLoot(player.position, player.rotation, PluginConfig.TargetZone.Value);
 #pragma warning disable CS4014
@@ -512,8 +513,9 @@ namespace RealismMod
                 Utils.Logger.LogWarning("new Vector3(" + player.position.x + "f, " + player.position.y + "f, " + player.position.z + "f)");
                 Utils.Logger.LogWarning("\"rotation\": {" + "\"x\":" + player.rotation.eulerAngles.x + "," + "\"y\":" + player.eulerAngles.y + "," + "\"z\":" + player.eulerAngles.z + "}");
             }
+
             if (Input.GetKeyDown(KeyCode.Keypad0)) HazardTracker.WipeTracker();
-         
+
             if (Input.GetKeyDown(PluginConfig.AddZone.Value.MainKey)) DebugZones();
 
             //if (Input.GetKeyDown(KeyCode.Keypad5)) Instantiate(Plugin.ExplosionGO, new Vector3(PluginConfig.test1.Value, PluginConfig.test2.Value, PluginConfig.test3.Value), new Quaternion(0, 0, 0, 0)); //new Vector3(1000f, 0f, 317f)
@@ -523,7 +525,7 @@ namespace RealismMod
         private void GetFps()
         {
             _averageFPS += ((Time.deltaTime / Time.timeScale) - _averageFPS) * 0.035f;
-            FPS = (1f / _averageFPS);
+            FPS = 1f / _averageFPS;
             if (float.IsNaN(FPS) || FPS <= 1f) FPS = 144f;
             FPS = Mathf.Clamp(FPS, 30f, 200f);
         }
@@ -560,12 +562,12 @@ namespace RealismMod
 
         private void LoadGeneralPatches()
         {
-            if (ServerConfig.spawn_waves) 
+            if (ServerConfig.spawn_waves)
             {
                 new SpawnUpdatePatch().Enable();
 
             }
-  
+
             //deafening + adrenaline trigger
             new FlyingBulletPatch().Enable();
 
@@ -604,7 +606,7 @@ namespace RealismMod
             new HealthPanelPatch().Enable();
             new DropItemPatch().Enable();
             new GetAvailableActionsPatch().Enable();
-           // if (ServerConfig.boss_spawns || ServerConfig.spawn_waves) new BossSpawnPatch().Enable();
+            // if (ServerConfig.boss_spawns || ServerConfig.spawn_waves) new BossSpawnPatch().Enable();
             new LampPatch().Enable();
             new AmbientSoundPlayerGroupPatch().Enable();
             new DayTimeAmbientPatch().Enable();

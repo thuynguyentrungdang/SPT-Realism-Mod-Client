@@ -13,10 +13,10 @@ using static EFT.Player;
 
 namespace RealismMod
 {
-    public enum EBracingDirection 
+    public enum EBracingDirection
     {
         Top,
-        Left, 
+        Left,
         Right,
         None
     }
@@ -45,7 +45,7 @@ namespace RealismMod
             Target = 0f
         };
 
-        private static AnimationCurve _smoothCurve = new AnimationCurve(
+        private static AnimationCurve _smoothCurve = new(
          new Keyframe(0, 0.05f),
          new Keyframe(0.1f, 0.075f),
          new Keyframe(0.2f, 0.1f),
@@ -59,12 +59,12 @@ namespace RealismMod
          new Keyframe(1, 1f)
         );
 
-        public static Vector3 MountPos {  get; set; }
+        public static Vector3 MountPos { get; set; }
         public static Vector3 MountDir { get; set; }
 
-        public static bool ShouldBlockAllStances 
+        public static bool ShouldBlockAllStances
         {
-            get 
+            get
             {
                 return (IsMounting && WeaponStats.BipodIsDeployed) || !MeleeIsToggleable;
             }
@@ -78,14 +78,14 @@ namespace RealismMod
             }
         }
 
-        public static bool CanDoTacSprint 
+        public static bool CanDoTacSprint
         {
-            get 
+            get
             {
                 return PluginConfig.EnableTacSprint.Value && PlayerState.IsSprinting && CurrentStance != EStance.ActiveAiming
-                && (CurrentStance == EStance.HighReady || StoredStance == EStance.HighReady) && 
-                WeaponStats.TotalWeaponWeight <= (WeaponStats.IsBullpup ? TAC_SPRINT_WEIGHT_BULLPUP : TAC_SPRINT_WEIGHT_LIMIT) 
-                && WeaponStats.TotalWeaponLength <= TAC_SPRINT_LENGTH_LIMIT && !PlayerState.IsScav 
+                && (CurrentStance == EStance.HighReady || StoredStance == EStance.HighReady) &&
+                WeaponStats.TotalWeaponWeight <= (WeaponStats.IsBullpup ? TAC_SPRINT_WEIGHT_BULLPUP : TAC_SPRINT_WEIGHT_LIMIT)
+                && WeaponStats.TotalWeaponLength <= TAC_SPRINT_LENGTH_LIMIT && !PlayerState.IsScav
                 && !Plugin.RealHealthController.HealthConditionPreventsTacSprint && WeaponStats.TotalErgo > TAC_SPRINT_ERGO_LIMIT;
             }
         }
@@ -151,12 +151,12 @@ namespace RealismMod
         public static bool HaveSetAiming = false;
         public static bool HaveSetActiveAim = false;
 
-        public static float HighReadyManipBuff 
-        { 
+        public static float HighReadyManipBuff
+        {
             get
             {
                 return CurrentStance == EStance.HighReady ? 1.18f : 1f;
-            } 
+            }
         }
         public static float ActiveAimManipBuff
         {
@@ -220,7 +220,8 @@ namespace RealismMod
         {
             get { return _isLeftShoulder; }
             set
-            { if (value != _isLeftShoulder)
+            {
+                if (value != _isLeftShoulder)
                 {
                     _isLeftShoulder = value;
                     Utils.GetYourPlayer().ProceduralWeaponAnimation.method_23();
@@ -280,8 +281,8 @@ namespace RealismMod
         public static bool IsMounting
         {
             get
-            { 
-                return _isRealismMounting; 
+            {
+                return _isRealismMounting;
             }
             set
             {
@@ -289,14 +290,19 @@ namespace RealismMod
                 {
                     Player player = Utils.GetYourPlayer();
                     FirearmController fc = player.HandsController as FirearmController;
-                    if (fc == null) 
+
+                    if (fc == null)
                     {
                         value = false;
                         return;
                     }
+
                     _isRealismMounting = value;
+
                     if (player.ProceduralWeaponAnimation != null) player.ProceduralWeaponAnimation.method_23();
+
                     float accuracy = fc.Item.GetTotalCenterOfImpact(false); //forces accuracy to update
+
                     AccessTools.Field(typeof(Player.FirearmController), "float_3").SetValue(fc, accuracy); //update weapon accuracy
                     player.ProceduralWeaponAnimation.UpdateTacticalReload(); //gives better chamber animations
                     //player.MovementContext.PlayerAnimator.SetProneBipodMount(player.MovementContext.IsInPronePose && WeaponStats.BipodIsDeployed && value); //this causes camera to detatch from weapon, could be a good effect if I could get camera to follow it.
@@ -313,7 +319,7 @@ namespace RealismMod
 
         public static Dictionary<string, Vector3> GetWeaponOffsets()
         {
-            return new Dictionary<string, Vector3>{
+            return new Dictionary<string, Vector3> {
             { "5aafa857e5b5b00018480968", new Vector3(0f, 0f, -0.1f)}, //m1a
             { "5b0bbe4e5acfc40dc528a72d", new Vector3(0f, 0f, -0.035f)}, //sa58
             { "676176d362e0497044079f4c", new Vector3(0f, -0.0135f, 0.02f)}, //x17
@@ -449,7 +455,7 @@ namespace RealismMod
             _lastRecordedStanceStamina = CurrentStance;
         }
 
-        public static void ResetStanceStamina() 
+        public static void ResetStanceStamina()
         {
             _regenStam = false;
             _drainStam = false;
@@ -849,7 +855,7 @@ namespace RealismMod
         {
             float speedFactorTarget = IsAiming && !IsLeftShoulder && _animationTimer == 0f ? PluginConfig.PistolPosResetSpeedMulti.Value * stanceMulti : PluginConfig.PistolPosSpeedMulti.Value * stanceMulti;
             _pistolPosSpeed = Mathf.Lerp(_pistolPosSpeed, speedFactorTarget, dt * 10f);
-            float xTarget = !IsBlindFiring && IsLeftShoulder && !CancelLeftShoulder ? -0.08f : !IsBlindFiring ? 0.04f : 0f;       
+            float xTarget = !IsBlindFiring && IsLeftShoulder && !CancelLeftShoulder ? -0.08f : !IsBlindFiring ? 0.04f : 0f;
             float zTarget = 0f;
 
             if (!IsAiming)
@@ -909,7 +915,7 @@ namespace RealismMod
             float stanceMulti = Mathf.Clamp(ergoMulti * PlayerState.StanceInjuryMulti * Plugin.RealHealthController.AdrenalineStanceBonus * (Mathf.Max(PlayerState.RemainingArmStamFactor, 0.55f)), 0.5f, 1.45f);
 
             //float balanceFactor = 1f + (WeaponStats.Balance / 100f);
-           // float rotationBalanceFactor = WeaponStats.Balance <= -9f ? -balanceFactor : balanceFactor;
+            // float rotationBalanceFactor = WeaponStats.Balance <= -9f ? -balanceFactor : balanceFactor;
             //float wiggleBalanceFactor = Mathf.Abs(WeaponStats.Balance) > 4f ? balanceFactor : Mathf.Abs(WeaponStats.Balance) <= 4f ? 0.75f : Mathf.Abs(WeaponStats.Balance) <= 3f ? 0.5f : 0.25f;
             float resetErgoMulti = (1f - stanceMulti) + 1f;
 
@@ -931,7 +937,7 @@ namespace RealismMod
             //I've no idea wtf is going on here but it sort of works
             if (!WeaponStats.HasShoulderContact && PluginConfig.EnableAltPistol.Value)
             {
-               DoAltPistolAndLeftShoulder(player, fc, pwa, stanceMulti, dt, camTarget);
+                DoAltPistolAndLeftShoulder(player, fc, pwa, stanceMulti, dt, camTarget);
             }
 
             if (CurrentStance == EStance.PatrolStance) return;
@@ -1042,26 +1048,6 @@ namespace RealismMod
                 DoWiggleEffects(player, pwa, fc.Weapon, new Vector3(-2f, 2f, 10f) * movementFactor, true);
             }
 
-/*            if (!IsAiming)
-            {
-                rifleYTarget = 0f;
-                rifleCameraAlignmentTarget = camTarget.y;
-            }
-            else
-            {
-                float tolerance = PluginConfig.test1.Value;
-                float speed = PluginConfig.test2.Value * stanceMulti * dt;
-
-                float error = rifleCameraAlignmentTarget - camTarget.y;
-
-                if (Mathf.Abs(error) > tolerance)
-                {
-                    float adjustment = error * speed * Time.deltaTime;
-
-                    rifleYTarget += adjustment;
-                }
-            }*/
-
             _currentRifleXPos = Mathf.Lerp(_currentRifleXPos, xTarget, dt * shoulderSpeed * 3.5f * _animSpeed);
             _currentRifleYPos = Mathf.Lerp(_currentRifleYPos, yTarget + rifleYTarget, dt * ySpeedFactor * _animSpeed); //if trying to fix stance ADS, animspeed might be fucking with things
             _currentRifleZPos = Mathf.Lerp(_currentRifleZPos, zTarget, dt * shoulderSpeed * _animSpeed);
@@ -1116,8 +1102,7 @@ namespace RealismMod
             float highReadyXWiggleFactor = WeaponStats.TotalErgo <= 49f ? -1f : 1f;
             float highReadyZWiggleFactor = WeaponStats.TotalErgo <= 40f ? 1f : 2f;
             bool pauseStance = PlayerState.IsInInventory || IsBlindFiring || IsLeftShoulder;
-             
-            float wiggleErgoMulti = Mathf.Clamp((WeaponStats.ErgoStanceSpeed * 0.5f), 0.1f, 1f);
+            float wiggleErgoMulti = Mathf.Clamp(WeaponStats.ErgoStanceSpeed * 0.5f, 0.1f, 1f);
             float stocklessModifier = WeaponStats.HasShoulderContact ? 1f : 0.5f;
             WiggleReturnSpeed = (1f - (PlayerState.AimSkillADSBuff * 0.5f)) * wiggleErgoMulti * PlayerState.StanceInjuryMulti * stocklessModifier * playerWeightFactor * (Mathf.Max(PlayerState.RemainingArmStamFactor, 0.55f));
 
@@ -1126,9 +1111,9 @@ namespace RealismMod
                  PluginConfig.ActiveAimRotation.Value;
 
             Quaternion activeAimMiniTargetQuaternion = Quaternion.Euler(PluginConfig.ActiveAimAdditionalRotation.Value * resetErgoMulti);
-           
+
             Quaternion activeAimRevertQuaternion = Quaternion.Euler(PluginConfig.ActiveAimResetRotation.Value * resetErgoMulti);
-           
+
             Vector3 activeAimTargetPosition = useThirdPersonStance ?
                 PluginConfig.ActiveThirdPersonPosition.Value :
                 PluginConfig.ActiveAimOffset.Value;
@@ -1147,7 +1132,7 @@ namespace RealismMod
             Quaternion lowReadyMiniTargetQuaternion = Quaternion.Euler(PluginConfig.LowReadyAdditionalRotation.Value * resetErgoMulti);
 
             Quaternion lowReadyRevertQuaternion = Quaternion.Euler(PluginConfig.LowReadyResetRotation.Value * resetErgoMulti);
-            
+
             Vector3 lowReadyTargetPosition = useThirdPersonStance ?
                 PluginConfig.LowReadyThirdPersonPosition.Value :
                 PluginConfig.LowReadyOffset.Value;
@@ -1179,9 +1164,9 @@ namespace RealismMod
             Quaternion shortStockTargetQuaternion = Quaternion.Euler(shortTargetRotation);
 
             Quaternion shortStockMiniTargetQuaternion = Quaternion.Euler(PluginConfig.ShortStockAdditionalRotation.Value * resetErgoMulti);
-           
+
             Quaternion shortStockRevertQuaternion = Quaternion.Euler(PluginConfig.ShortStockResetRotation.Value * resetErgoMulti);
-           
+
             Vector3 shortStockTargetPosition = useThirdPersonStance ?
                 PluginConfig.ShortStockThirdPersonPosition.Value :
                 PluginConfig.ShortStockOffset.Value;
@@ -1532,7 +1517,6 @@ namespace RealismMod
 
                 if (StanceBlender.Value < 1f)
                 {
-              
                     StanceTargetPosition = Vector3.Lerp(StanceTargetPosition, activeAimTargetPosition, PluginConfig.StanceTransitionSpeedMulti.Value * stanceMulti * transitionPositionFactor * dt);
                     rotationSpeed = 4f * stanceMulti * dt * ergoFactor * PluginConfig.ActiveAimAdditionalRotationSpeedMulti.Value * chonkerFactor * (useThirdPersonStance ? PluginConfig.ThirdPersonRotationSpeed.Value : 1f) * transitionRotationFactor;
                     stanceRotation = activeAimMiniTargetQuaternion;
@@ -1603,7 +1587,7 @@ namespace RealismMod
 
                 bool holdBackStab = Input.GetKey(PluginConfig.MeleeKeybind.Value.MainKey) && WeaponStats.HasBayonet && !MeleeHitSomething;
 
-                if ((initialPosDistance > 0.001f && !didHalfMeleeAnim))
+                if (initialPosDistance > 0.001f && !didHalfMeleeAnim)
                 {
                     stanceRotation = meleeInitialQuaternion;
                     StanceTargetPosition = Vector3.Lerp(StanceTargetPosition, meleeInitialPos, PluginConfig.StanceTransitionSpeedMulti.Value * Mathf.Clamp(stanceMulti, 0.75f, 1f) * dt * 1.5f * chonkerFactor);
@@ -1611,7 +1595,7 @@ namespace RealismMod
                 else
                 {
                     didHalfMeleeAnim = true;
-                    if (!holdBackStab) 
+                    if (!holdBackStab)
                     {
                         stanceRotation = meleeFinalQuaternion;
                         StanceTargetPosition = Vector3.Lerp(StanceTargetPosition, meleeFinalPos, PluginConfig.StanceTransitionSpeedMulti.Value * Mathf.Clamp(stanceMulti, 0.75f, 1f) * dt * 2f * chonkerFactor);
@@ -1812,7 +1796,7 @@ namespace RealismMod
 
             if (weaponRootAnim == null) return;
 
-            weaponRootAnim.LocalRotateAround(Vector3.up * -pivotPoint, new Vector3( _cumulativeMountPitch * aimMultiplier, 0, _cumulativeMountYaw * aimMultiplier));
+            weaponRootAnim.LocalRotateAround(Vector3.up * -pivotPoint, new Vector3(_cumulativeMountPitch * aimMultiplier, 0, _cumulativeMountYaw * aimMultiplier));
 
             // Not doing this messes up pivot for all offsets after this
             weaponRootAnim.LocalRotateAround(
@@ -1841,10 +1825,6 @@ namespace RealismMod
 
         public static void ToggleMounting(Player player, ProceduralWeaponAnimation pwa, Player.FirearmController fc)
         {
-           /* if (player.IsInPronePose && WeaponStats.BipodIsDeployed)
-            {
-                IsMounting = true;
-            }*/
             if (IsMounting && PlayerState.IsMoving)
             {
                 IsMounting = false;
