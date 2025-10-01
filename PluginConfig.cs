@@ -121,7 +121,7 @@ namespace RealismMod
         public static ConfigEntry<KeyboardShortcut> MuteGeigerKey { get; set; }
         public static ConfigEntry<KeyboardShortcut> MuteGasAnalyserKey { get; set; }
         public static ConfigEntry<KeyboardShortcut> ToggleGasMaskKey { get; set; }
-        
+
         //medical
         public static ConfigEntry<bool> EnableMedNotes { get; set; }
         public static ConfigEntry<bool> ResourceRateChanges { get; set; }
@@ -237,7 +237,7 @@ namespace RealismMod
         //dev config options
         public static ConfigEntry<bool> DevMode { get; set; }
         public static ConfigEntry<bool> ZoneDebug { get; set; }
-        public static ConfigEntry<String> TargetZone { get; set; }
+        public static ConfigEntry<string> TargetZone { get; set; }
         public static ConfigEntry<bool> EnableGeneralLogging { get; set; }
         public static ConfigEntry<bool> EnableMedicalLogging { get; set; }
         public static ConfigEntry<bool> EnableReloadLogging { get; set; }
@@ -257,7 +257,7 @@ namespace RealismMod
         public static ConfigEntry<KeyboardShortcut> AddEffectKeybind { get; set; }
         public static ConfigEntry<KeyboardShortcut> AddZone { get; set; }
         public static ConfigEntry<int> AddEffectBodyPart { get; set; }
-        public static ConfigEntry<String> AddEffectType { get; set; }
+        public static ConfigEntry<string> AddEffectType { get; set; }
 
         public static void InitConfigBindings(ConfigFile config)
         {
@@ -341,7 +341,7 @@ namespace RealismMod
             DeviceVolume = config.Bind<float>(zoneSettings, "Device Volume", 0.3f, new ConfigDescription("Volume Modifier For Geiger And Gas Analyser.", new AcceptableValueRange<float>(0f, 2f), new ConfigurationManagerAttributes { Order = 10, Browsable = Plugin.ServerConfig.enable_hazard_zones }));
             GasMaskBreathVolume = config.Bind<float>(zoneSettings, "Gas Mask Breath Volume", 0.3f, new ConfigDescription("Volume Modifier For Gas Mask SFX.", new AcceptableValueRange<float>(0f, 2f), new ConfigurationManagerAttributes { Order = 20, Browsable = Plugin.ServerConfig.enable_hazard_zones }));
             EnableTrueHazardRates = config.Bind<bool>(zoneSettings, "Display True Hazard Rates", false, new ConfigDescription("Enable To Show The 'True' Hazard Rate, I.E Not Factoring Meds Or Gas Mask.", null, new ConfigurationManagerAttributes { Order = 30, Browsable = Plugin.ServerConfig.enable_hazard_zones }));
-            ShowRadEffects = config.Bind<bool>(zoneSettings, "Visualize Radiation", Plugin.ServerConfig.enable_hazard_zones, new ConfigDescription("Radiation Causes Visual Noise, The Strength Of Which Depends On Current Radiation Rate And Total Radiation Poisoning.", null, new ConfigurationManagerAttributes { Order = 40, Browsable = Plugin.ServerConfig.enable_hazard_zones }));           
+            ShowRadEffects = config.Bind<bool>(zoneSettings, "Visualize Radiation", Plugin.ServerConfig.enable_hazard_zones, new ConfigDescription("Radiation Causes Visual Noise, The Strength Of Which Depends On Current Radiation Rate And Total Radiation Poisoning.", null, new ConfigurationManagerAttributes { Order = 40, Browsable = Plugin.ServerConfig.enable_hazard_zones }));
             ShowGasEffects = config.Bind<bool>(zoneSettings, "Visualize Gas", Plugin.ServerConfig.enable_hazard_zones, new ConfigDescription("Gas Will Become Visible", null, new ConfigurationManagerAttributes { Order = 40, Browsable = Plugin.ServerConfig.enable_hazard_zones })); MuteGasAnalyserKey = config.Bind(zoneSettings, "Mute Gas Analysed Key", new KeyboardShortcut(KeyCode.M, new[] { KeyCode.LeftControl }), new ConfigDescription("", null, new ConfigurationManagerAttributes { Order = 50, Browsable = Plugin.ServerConfig.enable_hazard_zones }));
             MuteGeigerKey = config.Bind(zoneSettings, "Mute Geiger Key", new KeyboardShortcut(KeyCode.M, new[] { KeyCode.LeftAlt }), new ConfigDescription("", null, new ConfigurationManagerAttributes { Order = 60, Browsable = Plugin.ServerConfig.enable_hazard_zones }));
             MuteGasAnalyserKey = config.Bind(zoneSettings, "Mute Gas Analysed Key", new KeyboardShortcut(KeyCode.M, new[] { KeyCode.LeftControl }), new ConfigDescription("", null, new ConfigurationManagerAttributes { Order = 70, Browsable = Plugin.ServerConfig.enable_hazard_zones }));
@@ -381,7 +381,7 @@ namespace RealismMod
             CanFellPlayer = config.Bind<bool>(ballSettings, "Enable Player Knockdown", Plugin.ServerConfig.realistic_ballistics, new ConfigDescription("If Hit In The Leg And The Leg Has/Will Have 0 HP, There Is A Chance That Prone Will Be Toggled. Chance Is Modified By Bullet Kinetic Energy And Doubled If Calf Is Hit.", null, new ConfigurationManagerAttributes { Order = 20, Browsable = Plugin.ServerConfig.realistic_ballistics }));
             CanDisarmBot = config.Bind<bool>(ballSettings, "Can Disarm Bot.", false, new ConfigDescription("If Hit In The Arms, There Is A Chance That The Currently Equipped Weapon Will Be Dropped. Chance Is Modified By Bullet Kinetic Energy And Reduced If Hit Arm Armor, And Doubled If Forearm Is Hit. WARNING: Disarmed Bots Will Become Passive And Not Attack Player, So This Is Disabled By Default.", null, new ConfigurationManagerAttributes { Order = 10, Browsable = Plugin.ServerConfig.realistic_ballistics }));
             CanDisarmPlayer = config.Bind<bool>(ballSettings, "Can Disarm Player", Plugin.ServerConfig.realistic_ballistics, new ConfigDescription("If Hit In The Arms, There Is A Chance That The Currently Equipped Weapon Will Be Dropped. Chance Is Modified By Bullet Kinetic Energy And Reduced If Hit Arm Armor, And Doubled If Forearm Is Hit.", null, new ConfigurationManagerAttributes { Order = 1, Browsable = Plugin.ServerConfig.realistic_ballistics }));
-            
+
             ShowBalance = config.Bind<bool>(statSettings, "Show Balance Stat", Plugin.ServerConfig.recoil_attachment_overhaul, new ConfigDescription("Requiures Restart. Warning: Showing Too Many Stats On Weapons With Lots Of Slots Makes The Inspect Menu UI Difficult To Use.", null, new ConfigurationManagerAttributes { Order = 5, Browsable = Plugin.ServerConfig.recoil_attachment_overhaul }));
             ShowCamRecoil = config.Bind<bool>(statSettings, "Show Camera Recoil Stat", false, new ConfigDescription("Requiures Restart. Warning: Showing Too Many Stats On Weapons With Lots Of Slots Makes The Inspect Menu UI Difficult To Use.", null, new ConfigurationManagerAttributes { Order = 4, Browsable = Plugin.ServerConfig.recoil_attachment_overhaul }));
             ShowDispersion = config.Bind<bool>(statSettings, "Show Dispersion Stat", false, new ConfigDescription("Requiures Restart. Warning: Showing Too Many Stats On Weapons With Lots Of Slots Makes The Inspect Menu UI Difficult To Use.", null, new ConfigurationManagerAttributes { Order = 3, Browsable = Plugin.ServerConfig.recoil_attachment_overhaul }));
@@ -469,13 +469,13 @@ namespace RealismMod
 
             ShortStockThirdPersonPosition = config.Bind<Vector3>(thirdPerson, "Short-Stock Third Person Position", new Vector3(0.03f, 0.065f, -0.075f), new ConfigDescription("", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 200, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
             ShortStockThirdPersonRotation = config.Bind<Vector3>(thirdPerson, "Short-Stock Third Person Rotation", new Vector3(0f, -15f, 0f), new ConfigDescription("", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 170, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
-   
+
             ActiveThirdPersonPosition = config.Bind<Vector3>(thirdPerson, "Active Aim Third Person Position", new Vector3(-0.02f, -0.02f, 0.02f), new ConfigDescription("", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 140, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
             ActiveThirdPersonRotation = config.Bind<Vector3>(thirdPerson, "Active Aim Third Person Rotation", new Vector3(0f, -35f, 0f), new ConfigDescription("", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 110, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
 
             HighReadyThirdPersonPosition = config.Bind<Vector3>(thirdPerson, "High Ready Third Person Position", new Vector3(0.02f, 0.05f, -0.045f), new ConfigDescription("", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 80, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
             HighReadyThirdPersonRotation = config.Bind<Vector3>(thirdPerson, "High Ready Third Person Rotation", new Vector3(-8f, -25f, 0f), new ConfigDescription("", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 50, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
-           
+
             LowReadyThirdPersonPosition = config.Bind<Vector3>(thirdPerson, "Low Ready Third Person Position", new Vector3(0.01f, -0.025f, 0f), new ConfigDescription("", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 20, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
             LowReadyThirdPersonRotation = config.Bind<Vector3>(thirdPerson, "Low Ready Third Person Rotation", new Vector3(24f, 10f, -1f), new ConfigDescription("", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 8, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
 
@@ -489,7 +489,7 @@ namespace RealismMod
             ActiveAimRotation = config.Bind<Vector3>(activeAim, "Active Aim Rotation", new Vector3(0.0f, -35f, 0f), new ConfigDescription("Weapon Rotation When In Stance.", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 122, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
             ActiveAimAdditionalRotation = config.Bind<Vector3>(activeAim, "Active Aiming Additional Rotation", new Vector3(0f, -35f, 0f), new ConfigDescription("Additional Seperate Weapon Rotation When Going Into Stance.", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 111, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
             ActiveAimResetRotation = config.Bind<Vector3>(activeAim, "Active Aiming Reset Rotation", new Vector3(0f, 20f, -1f), new ConfigDescription("Weapon Rotation When Going Out Of Stance.", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 102, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
-     
+
             HighReadyAdditionalRotationSpeedMulti = config.Bind<float>(highReady, "High Ready Additonal Rotation Speed Multi.", 0.1f, new ConfigDescription("How Fast The Weapon Rotates Going Out Of Stance.", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 94, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
             HighReadyResetRotationMulti = config.Bind<float>(highReady, "High Ready Reset Rotation Speed Multi.", 1.5f, new ConfigDescription("How Fast The Weapon Rotates Going Out Of Stance.", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 93, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
             HighReadyRotationMulti = config.Bind<float>(highReady, "High Ready Rotation Speed Multi.", 2f, new ConfigDescription("How Fast The Weapon Rotates Going Into Stance.", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 92, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
@@ -534,23 +534,11 @@ namespace RealismMod
             ShortStockAdditionalRotation = config.Bind<Vector3>(shortStock, "Short-Stock Ready Additional Rotation", new Vector3(-3.0f, -15f, 1f), new ConfigDescription("Additional Seperate Weapon Rotation When Going Into Stance.", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 6, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
             ShortStockResetRotation = config.Bind<Vector3>(shortStock, "Short-Stock Ready Reset Rotation", new Vector3(-1.5f, 2f, 0f), new ConfigDescription("Weapon Rotation When Going Out Of Stance.", null, new ConfigurationManagerAttributes { ShowRangeAsPercent = false, Order = 3, IsAdvanced = true, Browsable = Plugin.ServerConfig.enable_stances }));
 
-/*            foreach (var configEntry in config.Keys)
-            {
-                var definition = configEntry;
-                if (!Plugin.ServerConfig.enable_stances || !Plugin.ServerConfig.recoil_attachment_overhaul && (definition.Section == weapAimAndPos || definition.Section == stanceBinds)) ResetToDefault(config, definition);
-                if (!Plugin.ServerConfig.movement_changes && definition.Section == moveSettings) ResetToDefault(config, definition);
-                if (!Plugin.ServerConfig.recoil_attachment_overhaul && (definition.Section == waponSettings || definition.Section == statSettings || definition.Section == speed || definition.Section == advancedRecoilSettings || definition.Section == recoilSettings)) ResetToDefault(config, definition);
-                if (!Plugin.ServerConfig.reload_changes && (definition.Section == speed)) ResetToDefault(config, definition);
-                if (!Plugin.ServerConfig.enable_hazard_zones || !Plugin.ServerConfig.med_changes && (definition.Section == zoneSettings)) ResetToDefault(config, definition);
-                if (!Plugin.ServerConfig.med_changes && (definition.Section == healthSettings)) ResetToDefault(config, definition);
-                if (!Plugin.ServerConfig.realistic_ballistics && (definition.Section == ballSettings)) ResetToDefault(config, definition);
-            }
-            config.Save();*/
         }
 
 
 
-        private static void ResetToDefault(ConfigFile config, ConfigDefinition definition) 
+        private static void ResetToDefault(ConfigFile config, ConfigDefinition definition)
         {
             Utils.Logger.LogWarning("definition key: " + definition.Key);
             Utils.Logger.LogWarning("definition section: " + definition.Section);
