@@ -126,7 +126,7 @@ namespace RealismMod
         public static void PatchPostfix(ExfiltrationControllerClass __instance)
         {
             GameWorldController.ExfilsInLocation.Clear();
-            foreach (var exfil in __instance.ExfiltrationPoints) 
+            foreach (var exfil in __instance.ExfiltrationPoints)
             {
                 if (PluginConfig.ZoneDebug.Value) Logger.LogWarning($"exfil {exfil.name}, id {exfil.Id}, go {exfil.gameObject.tag}, name {exfil.Settings.Name},  id {exfil.Settings.Id}");
                 GameWorldController.ExfilsInLocation.Add(exfil);
@@ -164,12 +164,8 @@ namespace RealismMod
 
     class DayTimeAmbientPatch : ModulePatch
     {
-/*        private static FieldInfo _dayAudioSourceField;
-        private static FieldInfo _nightAudioSourceField;*/
         protected override MethodBase GetTargetMethod()
         {
-/*            _dayAudioSourceField = AccessTools.Field(typeof(AudioSource), "_outdoorAmbientDaySource");
-            _nightAudioSourceField = AccessTools.Field(typeof(AudioSource), "_outdoorAmbientNightSource");*/
             return typeof(DayTimeAmbientBlender).GetMethod("SetSeasonStatus");
         }
 
@@ -256,7 +252,7 @@ namespace RealismMod
     }
 
     //for events I need to dynamically change boss spawn chance, but the point at which the event is declared server-side is too late for changing boss spawns
-    public class BossSpawnPatch : ModulePatch 
+    public class BossSpawnPatch : ModulePatch
     {
         //Gas event can't be on labs or factory, so using these zones as proxy for map detection
         //no good way to know what map we're currently on at this point in the raid loading, it is what it is.
@@ -279,11 +275,11 @@ namespace RealismMod
             }
         }
 
-        private static bool IsForbiddenSpawnZone(string[] zones) 
+        private static bool IsForbiddenSpawnZone(string[] zones)
         {
             return _forbiddenZones.Intersect(zones).Any();
         }
-        
+
         [PatchPostfix]
         public static void PatchPostfix(BossLocationSpawn __instance)
         {
@@ -292,7 +288,7 @@ namespace RealismMod
             bool disableZombieSpawn = false;
             HandleZombies(__instance, ref disableZombieSpawn, isZombie);
 
-            var zones = __instance.BossZone.Split(new char[] { ',' });
+            var zones = __instance.BossZone.Split([',']);
             if (disableZombieSpawn || (IsForbiddenSpawnZone(zones) && !isZombie)) return;
 
             bool increaseSectantChance = __instance.BossType == WildSpawnType.sectantPriest && Plugin.ModInfo.DoGasEvent && !Plugin.ModInfo.DoExtraRaiders;
@@ -303,13 +299,13 @@ namespace RealismMod
             bool isSpecialEvent = postExpl || Plugin.ModInfo.DoGasEvent || isPreExpl;
             bool isRaider = __instance.BossType == WildSpawnType.pmcBot;
             bool isSectant = __instance.BossType != WildSpawnType.sectantPriest;
-            if (increaseSectantChance) 
+            if (increaseSectantChance)
             {
                 bool doExtraCultists = Plugin.ModInfo.DoExtraCultists;
                 __instance.BossChance = __instance.BossChance == 0 && !doExtraCultists ? 25f : 100f;
                 __instance.ShallSpawn = ChanceCalcClass.IsTrue100(__instance.BossChance);
             }
-            else if (increaseRaiderChance) 
+            else if (increaseRaiderChance)
             {
                 __instance.BossChance = 100f;
             }
@@ -319,7 +315,7 @@ namespace RealismMod
                 __instance.ShallSpawn = false;
             }
 
-            if (PluginConfig.ZoneDebug.Value) 
+            if (PluginConfig.ZoneDebug.Value)
             {
                 Logger.LogWarning($"=============");
                 Logger.LogWarning($"Do Gas Event ? {Plugin.ModInfo.DoGasEvent}");
@@ -380,15 +376,15 @@ namespace RealismMod
             if (__result != null && __result.Actions != null && __args != null && __args.Count() > 0)
             {
                 LootItem lootItem;
-                if ((lootItem = (__args[1] as LootItem)) != null)
+                if ((lootItem = __args[1] as LootItem) != null)
                 {
-                    if(lootItem.TemplateId == Utils.GAMU_ID || lootItem.TemplateId == Utils.RAMU_ID)
-                    {                                       
-                        if (lootItem.gameObject.TryGetComponent<HazardAnalyser>(out HazardAnalyser analyser)) 
+                    if (lootItem.TemplateId == Utils.GAMU_ID || lootItem.TemplateId == Utils.RAMU_ID)
+                    {
+                        if (lootItem.gameObject.TryGetComponent<HazardAnalyser>(out HazardAnalyser analyser))
                         {
                             bool hasBeenAnalysed = analyser.TargetZone != null && analyser.TargetZone.HasBeenAnalysed;
                             bool alreadyHasDevice = analyser.ZoneAlreadyHasDevice();
-                            if (analyser.CanTurnOn && !hasBeenAnalysed && !alreadyHasDevice) 
+                            if (analyser.CanTurnOn && !hasBeenAnalysed && !alreadyHasDevice)
                             {
                                 __result.Actions.AddRange(analyser.Actions);
                             }
@@ -397,13 +393,13 @@ namespace RealismMod
 
                     if (lootItem.TemplateId == Utils.HALLOWEEN_TRANSMITTER_ID)
                     {
-                        if (lootItem.gameObject.TryGetComponent<TransmitterHalloweenEvent>(out TransmitterHalloweenEvent transmitter))
+                        if (lootItem.gameObject.TryGetComponent(out TransmitterHalloweenEvent transmitter))
                         {
                             bool alreadyHasDevice = transmitter.ZoneAlreadyHasDevice();
                             bool hasBeenAnalysed = transmitter.TargetZone != null && transmitter.TargetZone.HasBeenAnalysed;
-                            if (transmitter.TriggeredExplosion || hasBeenAnalysed) 
+                            if (transmitter.TriggeredExplosion || hasBeenAnalysed)
                             {
-                                __result.Actions = new List<ActionsTypesClass>() { new ActionsTypesClass { Name = "", Action = DummyAction } };
+                                __result.Actions = [new() { Name = "", Action = DummyAction }];
                             }
                             else if (transmitter.CanTurnOn && !alreadyHasDevice)
                             {
@@ -411,7 +407,6 @@ namespace RealismMod
                             }
                         }
                     }
-
                 }
             }
         }
@@ -421,25 +416,25 @@ namespace RealismMod
     {
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(GameWorld).GetMethod("ThrowItem", new Type[] { typeof(Item), typeof(IPlayer), typeof(Vector3), typeof(Quaternion), typeof(Vector3), typeof(Vector3), typeof(bool), typeof(bool), typeof(float) });
+            return typeof(GameWorld).GetMethod("ThrowItem", [typeof(Item), typeof(IPlayer), typeof(Vector3), typeof(Quaternion), typeof(Vector3), typeof(Vector3), typeof(bool), typeof(bool), typeof(float)]);
         }
 
         [PatchPostfix]
-        private static void PatchPostfix(ref EFT.Interactive.LootItem __result, IPlayer player)
+        private static void PatchPostfix(ref LootItem __result, IPlayer player)
         {
             bool isGamu = __result.Item.TemplateId == Utils.GAMU_ID;
             bool isRamu = __result.Item.TemplateId == Utils.RAMU_ID;
             bool isHalloweenTransmitter = __result.Item.TemplateId == Utils.HALLOWEEN_TRANSMITTER_ID;
-            if (isGamu || isRamu) 
+            if (isGamu || isRamu)
             {
                 //when the item is picked up, the old componment is not destroyed because BSG persists the LootItem gameobject at least for some time before GC...
-                if (__result.gameObject.TryGetComponent<HazardAnalyser>(out HazardAnalyser oldAnalyser)) 
+                if (__result.gameObject.TryGetComponent(out HazardAnalyser oldAnalyser))
                 {
                     UnityEngine.Object.Destroy(oldAnalyser);
                 }
 
                 HazardAnalyser analyser = __result.gameObject.AddComponent<HazardAnalyser>();
-                analyser._IPlayer = player; 
+                analyser._IPlayer = player;
                 analyser._Player = Utils.GetPlayerByProfileId(player.ProfileId);
                 analyser._LootItem = __result;
                 analyser.TargetZoneType = isGamu ? EZoneType.Gas : EZoneType.Radiation;
@@ -447,9 +442,10 @@ namespace RealismMod
                 collider.isTrigger = true;
                 collider.size = new Vector3(0.1f, 0.1f, 0.1f);
             }
-            if (isHalloweenTransmitter) 
+
+            if (isHalloweenTransmitter)
             {
-                if (__result.gameObject.TryGetComponent<TransmitterHalloweenEvent>(out TransmitterHalloweenEvent oldTransmitter))
+                if (__result.gameObject.TryGetComponent(out TransmitterHalloweenEvent oldTransmitter))
                 {
                     UnityEngine.Object.Destroy(oldTransmitter);
                 }
@@ -457,7 +453,7 @@ namespace RealismMod
                 transmitter._IPlayer = player;
                 transmitter._Player = Utils.GetPlayerByProfileId(player.ProfileId);
                 transmitter._LootItem = __result;
-                transmitter.TargetQuestZones = new string[] { "SateliteCommLink" };
+                transmitter.TargetQuestZones = ["SateliteCommLink"];
                 transmitter.QuestTrigger = "SateliteCommLinkEstablished";
                 BoxCollider collider = transmitter.gameObject.AddComponent<BoxCollider>();
                 collider.isTrigger = true;
@@ -559,7 +555,7 @@ namespace RealismMod
         {
             return typeof(GameWorld).GetMethod("OnGameStarted", BindingFlags.Instance | BindingFlags.Public);
         }
- 
+
         [PatchPostfix]
         private static void PatchPostfix(GameWorld __instance)
         {
@@ -620,7 +616,7 @@ namespace RealismMod
             if (Plugin.ServerConfig.enable_hazard_zones)
             {
                 var sessionData = Singleton<ClientApplication<ISession>>.Instance?.GetClientBackEndSession();
-                if (sessionData?.Profile?.Info != null) ProfileData.PMCLevel = sessionData.Profile.Info.Level;      
+                if (sessionData?.Profile?.Info != null) ProfileData.PMCLevel = sessionData.Profile.Info.Level;
                 HazardTracker.ResetTracker();
                 HazardTracker.UpdateHazardValues(ProfileData.CurrentProfileId);
                 HazardTracker.SaveHazardValues();

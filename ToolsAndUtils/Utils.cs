@@ -161,17 +161,19 @@ namespace RealismMod
             return result;
         }
 
-        public static Player GetYourPlayer() 
+        public static Player GetYourPlayer()
         {
             GameWorld gameWorld = Singleton<GameWorld>.Instance;
+
             if (gameWorld == null) return null;
+
             return gameWorld.MainPlayer;
         }
 
         public static Player GetPlayerByProfileId(string id)
         {
             GameWorld gameWorld = Singleton<GameWorld>.Instance;
-            return gameWorld.GetAlivePlayerByProfileID(id);   
+            return gameWorld.GetAlivePlayerByProfileID(id);
         }
 
         public static bool CheckIsReady()
@@ -182,10 +184,10 @@ namespace RealismMod
             Player player = gameWorld?.MainPlayer;
             if (player != null)
             {
-                Utils.WeaponIsReady = player?.HandsController != null && player?.HandsController?.Item != null && player?.HandsController?.Item is Weapon ? true : false;
-                Utils.IsInHideout = player is HideoutPlayer ? true : false;
+                Utils.WeaponIsReady = player?.HandsController != null && player?.HandsController?.Item != null && player?.HandsController?.Item is Weapon;
+                Utils.IsInHideout = player is HideoutPlayer;
             }
-            else 
+            else
             {
                 Utils.WeaponIsReady = false;
                 Utils.IsInHideout = false;
@@ -205,11 +207,13 @@ namespace RealismMod
 
         public static void AddAttribute(Item item, ENewItemAttributeId att, float baseValue, string displayValue, bool? lessIsGood = null, string name = null, bool colored = true)
         {
-            string attName = name == null ? att.GetName() : name;
-            ItemAttributeClass attribute = new ItemAttributeClass(att);
-            attribute.Name = attName;
-            attribute.Base = () => baseValue;
-            attribute.StringValue = () => displayValue;
+            string attName = name ?? att.GetName();
+            ItemAttributeClass attribute = new(att)
+            {
+                Name = attName,
+                Base = () => baseValue,
+                StringValue = () => displayValue
+            };
             if (lessIsGood != null) attribute.LessIsGood = (bool)lessIsGood;
             attribute.DisplayType = () => EItemAttributeDisplayType.Compact;
             attribute.LabelVariations = colored ? EItemAttributeLabelVariations.Colored : EItemAttributeLabelVariations.None;

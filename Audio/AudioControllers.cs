@@ -253,7 +253,7 @@ namespace RealismMod.Audio
             while (!sendWeb.isDone)
                 await Task.Yield();
 
-            if (uwr.isNetworkError || uwr.isHttpError)
+            if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
             {
                 Utils.Logger.LogError("Realism Mod: Failed To Fetch Audio Clip");
                 return null;

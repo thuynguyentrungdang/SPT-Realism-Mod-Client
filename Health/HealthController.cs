@@ -389,7 +389,7 @@ namespace RealismMod
                 _reliefWaitTime += Time.deltaTime;
                 _hazardWaitTime += Time.deltaTime;
 
-                HealthEffecTick();
+                HealthEffectTick();
 
                 InRaidEffectDebuger();
                 DropGearChecker();
@@ -1057,9 +1057,16 @@ namespace RealismMod
         }
 
         //replace all this logic with a schedular class to control execution timing
-        public void HealthEffecTick()
+        public void HealthEffectTick()
         {
             Player player = Utils.GetYourPlayer();
+
+            if (player == null)
+            {
+                Utils.Logger.LogError("[HealthEffectTick] Player was null");
+                return;
+            }
+
             PlayerState.ImmuneSkillWeak = player.Skills.ImmunityPainKiller.Value;
             PlayerState.ImmuneSkillStrong = player.Skills.ImmunityMiscEffects.Value;
             PlayerState.StressResistanceFactor = player.Skills.StressPain.Value;
@@ -1103,7 +1110,7 @@ namespace RealismMod
 
             if (PluginConfig.PassiveRegen.Value && !HasCustomEffectOfType(typeof(PassiveHealthRegenEffect), EBodyPart.Common))
             {
-                PassiveHealthRegenEffect resEffect = new PassiveHealthRegenEffect(player, this);
+                PassiveHealthRegenEffect resEffect = new(player, this);
                 AddCustomEffect(resEffect, false);
             }
 
@@ -2266,7 +2273,7 @@ namespace RealismMod
                 {
                     if ((HazardTracker.TotalToxicity >= TOXICITY_THRESHOLD || IsCoughingInGas) && !HasCustomEffectOfType(typeof(ToxicityEffect), EBodyPart.Chest))
                     {
-                        ToxicityEffect toxicity = new ToxicityEffect(null, player, 0, this);
+                        ToxicityEffect toxicity = new(null, player, 0, this);
                         AddCustomEffect(toxicity, false);
                     }
 
@@ -2280,7 +2287,7 @@ namespace RealismMod
                 {
                     if (HazardTracker.TotalRadiation >= RADIATION_THRESHOLD && !HasCustomEffectOfType(typeof(ToxicityEffect), EBodyPart.Chest))
                     {
-                        RadiationEffect radiation = new RadiationEffect(null, player, 0, this);
+                        RadiationEffect radiation = new(null, player, 0, this);
                         AddCustomEffect(radiation, false);
                     }
 

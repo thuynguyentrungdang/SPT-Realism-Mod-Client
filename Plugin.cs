@@ -522,11 +522,13 @@ namespace RealismMod
         }
 
         //games procedural animations are highly affected by FPS. I balanced everything at 144 FPS, so need to factor it.    
-        private void GetFps()
+        private void GetFPS()
         {
             _averageFPS += ((Time.deltaTime / Time.timeScale) - _averageFPS) * 0.035f;
             FPS = 1f / _averageFPS;
+
             if (float.IsNaN(FPS) || FPS <= 1f) FPS = 144f;
+
             FPS = Mathf.Clamp(FPS, 30f, 200f);
         }
 
@@ -535,7 +537,7 @@ namespace RealismMod
             //TEMPORARY
             if (GameWorldController.GameStarted && PluginConfig.ZoneDebug.Value) MoveDaCube.Update();
 
-            GetFps();
+            GetFPS();
             CheckForProfileData();
             CheckForMods();
 

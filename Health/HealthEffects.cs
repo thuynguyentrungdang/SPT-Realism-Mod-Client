@@ -69,7 +69,7 @@ namespace RealismMod
             if (Delay <= 0)
             {
                 TimeExisted++;
-       
+
                 if (!haveNotified)
                 {
                     if (PluginConfig.EnableMedNotes.Value) NotificationManagerClass.DisplayWarningNotification("Tourniquet Applied On " + BodyPart + ", You Are Losing Health On This Limb. Use A Surgery Kit To Remove It", EFT.Communications.ENotificationDurationType.Long);
@@ -90,7 +90,7 @@ namespace RealismMod
                     RealHealthController.RemoveBaseEFTEffect(_Player, BodyPart, "LightBleeding");
                 }
 
-                if (currentPartHP > 25f && TimeExisted % 3 == 0) 
+                if (currentPartHP > 25f && TimeExisted % 3 == 0)
                 {
                     _Player.ActiveHealthController.AddEffect<HealthChange>(BodyPart, 0f, 3f, 1f, HpPerTick, null);
                 }
