@@ -913,7 +913,7 @@ namespace RealismMod
         [PatchPrefix]
         private static bool PatchPrefix(HealthControllerClass __instance, Item item, GStruct353<EBodyPart> bodyParts, float? amount, ref bool __result)
         {
-            if (GameWorldController.IsInRaid()) return true;
+            if (GameWorldController.IsInRaid() || !Plugin.ServerConfig.med_changes) return true;
 
             Plugin.BSGHealthController = __instance;
 
@@ -951,16 +951,13 @@ namespace RealismMod
         [PatchPostfix]
         private static void Postfix(HealthControllerClass __instance, Item item, GStruct353<EBodyPart> bodyParts, float? amount)
         {
-            if (Plugin.ServerConfig.food_changes)
+            if (!Plugin.ServerConfig.food_changes) return;
+            FoodDrinkItemClass foodClass = item as FoodDrinkItemClass;
+            if (foodClass != null)
             {
-                FoodDrinkItemClass foodClass = item as FoodDrinkItemClass;
-                if (foodClass != null)
-                {
-                    if (PluginConfig.EnableMedicalLogging.Value) Logger.LogWarning("is food");
-                    DoFoodItem(__instance, foodClass);
-                    Singleton<GUISounds>.Instance.PlayItemSound(item.ItemSound, EInventorySoundType.offline_use, false);
-                    return;
-                }
+                if (PluginConfig.EnableMedicalLogging.Value) Logger.LogWarning("is food");
+                DoFoodItem(__instance, foodClass);
+                Singleton<GUISounds>.Instance.PlayItemSound(item.ItemSound, EInventorySoundType.offline_use, false);
             }
         }
     }
