@@ -64,7 +64,7 @@ namespace RealismMod
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, Plugin.PLUGINVERSION)]
     public class Plugin : BaseUnityPlugin
     {
-        private const string PLUGINVERSION = "1.5.3";
+        private const string PLUGINVERSION = "1.6.2";
 
         public static Plugin Instance;
         //delete this
